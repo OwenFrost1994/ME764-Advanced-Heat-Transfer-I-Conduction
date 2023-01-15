@@ -1,0 +1,465 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW10</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-07-02"><meta name="DC.source" content="HW10.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">a)</a></li><li><a href="#3">b)</a></li><li><a href="#4">c)</a></li><li><a href="#5">d)</a></li></ul></div><pre class="codeinput">clear
+clc
+close <span class="string">all</span>
+
+D = 0.06; <span class="comment">%m</span>
+th = 0.008;
+L = 0.30;
+
+hinv = 20;
+hinl = 300;
+tin = 80;
+
+hout = 25;
+tout = 300;
+
+k = 10;
+rho = 8500;
+c = 420;
+
+Davg = D+th;
+</pre><h2>a)<a name="2"></a></h2><pre class="codeinput">M = 3;
+N = 3;
+dx = L/(M-1);
+dy = pi*Davg/(N-1);
+
+C = Cmake(M,N,rho,c,dx,dy,th);
+K = Kmake(M,N,k,dx,dy,th);
+Hout = Houtmake(M,N,hout,dx,dy);
+Hin = Hinmake(M,N,hinl,hinv,dx,dy);
+[tinfin, tinfout] = tinfmake(M,N,tin,tout);
+C
+K
+Hout
+Hin
+tinfin
+tinfout
+</pre><pre class="codeoutput">
+C =
+
+  Columns 1 through 7
+
+  114.3980         0         0         0         0         0         0
+         0  228.7959         0         0         0         0         0
+         0         0  114.3980         0         0         0         0
+         0         0         0  228.7959         0         0         0
+         0         0         0         0  457.5918         0         0
+         0         0         0         0         0  228.7959         0
+         0         0         0         0         0         0  114.3980
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0
+
+  Columns 8 through 9
+
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+  228.7959         0
+         0  114.3980
+
+
+K =
+
+  Columns 1 through 7
+
+    0.0847   -0.0285         0   -0.0562         0         0         0
+   -0.0285    0.1693   -0.0285         0   -0.1123         0         0
+         0   -0.0285    0.0847         0         0   -0.0562         0
+   -0.0562         0         0    0.1693   -0.0570         0   -0.0562
+         0   -0.1123         0   -0.0570    0.3386   -0.0570         0
+         0         0   -0.0562         0   -0.0570    0.1693         0
+         0         0         0   -0.0562         0         0    0.0847
+         0         0         0         0   -0.1123         0   -0.0285
+         0         0         0         0         0   -0.0562         0
+
+  Columns 8 through 9
+
+         0         0
+         0         0
+         0         0
+         0         0
+   -0.1123         0
+         0   -0.0562
+   -0.0285         0
+    0.1693   -0.0285
+   -0.0285    0.0847
+
+
+Hout =
+
+  Columns 1 through 7
+
+    0.1001         0         0         0         0         0         0
+         0    0.2003         0         0         0         0         0
+         0         0    0.1001         0         0         0         0
+         0         0         0    0.2003         0         0         0
+         0         0         0         0    0.4006         0         0
+         0         0         0         0         0    0.2003         0
+         0         0         0         0         0         0    0.1001
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0
+
+  Columns 8 through 9
+
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+    0.2003         0
+         0    0.1001
+
+
+Hin =
+
+  Columns 1 through 7
+
+    1.2017         0         0         0         0         0         0
+         0    2.4033         0         0         0         0         0
+         0         0    1.2017         0         0         0         0
+         0         0         0         0         0         0         0
+         0         0         0         0    2.5635         0         0
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0    0.0801
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0
+
+  Columns 8 through 9
+
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+         0         0
+    0.1602         0
+         0    0.0801
+
+
+tinfin =
+
+    80
+    80
+    80
+    80
+    80
+    80
+    80
+    80
+    80
+
+
+tinfout =
+
+   300
+   300
+   300
+   300
+   300
+   300
+   300
+   300
+   300
+
+</pre><h2>b)<a name="3"></a></h2><pre class="codeinput">M = 51;
+N = 51;
+dx = L/(M-1);
+dy = pi*Davg/(N-1);
+
+C = Cmake(M,N,rho,c,dx,dy,th);
+K = Kmake(M,N,k,dx,dy,th);
+Hout = Houtmake(M,N,hout,dx,dy);
+Hin = Hinmake(M,N,hinl,hinv,dx,dy);
+[tinfin, tinfout] = tinfmake(M,N,tin,tout);
+
+S = K+Hin+Hout;
+r = Hin*tinfin+Hout*tinfout;
+j=1;
+<span class="keyword">for</span> j=1:1:N
+<span class="comment">%dirichlet at other x=0 nodes</span>
+    dirich(j,1)=M*(j-1)+1;
+    dirich(j,2)=tout;
+    j=j+1;
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> n=1:1:size(dirich,1)<span class="comment">%loop over every Dirichlet boundary condition</span>
+    rw = dirich(n,1);
+    <span class="keyword">for</span> m=1:1:M*N<span class="comment">%loop to set all columns of row as 0</span>
+        S(rw,m) = 0;
+    <span class="keyword">end</span>
+    S(rw,rw) = 1.;<span class="comment">%set S(rw,rw) as 1</span>
+    r(rw) = dirich(n,2);<span class="comment">%set r(rw) as the constant value</span>
+<span class="keyword">end</span>
+
+tss = S\r;
+Tss = reshape(tss,[M,N]);
+
+figure(1)
+surfc(0:dx:L,0:dy:pi*Davg,Tss',<span class="string">'LineWidth'</span>,1)
+xlim([0 L])
+ylim([0 pi*Davg])
+colorbar
+set(gcf,<span class="string">'position'</span>,[200,300,1000,800])
+xlabel({<span class="string">'$x[m]$'</span>},<span class="string">'FontSize'</span>,20,<span class="string">'Interpreter'</span>,<span class="string">'Latex'</span>);
+ylabel({<span class="string">'$y[m]$'</span>},<span class="string">'FontSize'</span>,20,<span class="string">'Interpreter'</span>,<span class="string">'Latex'</span>);
+zlabel({<span class="string">'$t_{ss}[K]$'</span>},<span class="string">'FontSize'</span>,20,<span class="string">'Interpreter'</span>,<span class="string">'Latex'</span>);
+set(gca, <span class="string">'FontName'</span>,<span class="string">'Times New Roman'</span>,<span class="string">'FontSize'</span>, 20)
+</pre><img vspace="5" hspace="5" src="HW10_01.png" alt=""> <h2>c)<a name="4"></a></h2><pre class="codeinput"><span class="comment">%the critical time should be</span>
+thetac = 2/max(sum(abs(S),2)./diag(C));
+thetac
+</pre><pre class="codeoutput">
+thetac =
+
+    0.3661
+
+</pre><h2>d)<a name="5"></a></h2><pre class="codeinput"><span class="comment">%Crank-Nicolson method</span>
+
+dtheta = thetac/2;
+
+<span class="comment">%initial condition is tout</span>
+tini = tout*ones(M*N,1);
+
+<span class="keyword">for</span> n=1:1:size(dirich,1)<span class="comment">%loop over every Dirichlet boundary condition</span>
+    rw = dirich(n,1);
+    <span class="keyword">for</span> m=1:1:M*N<span class="comment">%loop to set all columns of row as 0</span>
+        C(rw,m) = 0;
+    <span class="keyword">end</span>
+    C(rw,rw) = 1.;<span class="comment">%set S(rw,rw) as 1</span>
+<span class="keyword">end</span>
+
+A = C+S*dtheta/2;
+B = C-S*dtheta/2;
+b = r*dtheta;
+
+nstep = 2000;
+<span class="comment">%transient temperature</span>
+tt = zeros(M*N,nstep);
+tt(:,1) = tini;
+
+<span class="keyword">for</span> thetas=1:1:nstep-1
+    tt(:,thetas+1) = A\(B*tt(:,thetas)+b);
+<span class="keyword">end</span>
+
+figure(2)
+plot(0:dtheta:dtheta*(nstep-1),tt(M,:),<span class="string">'b-'</span>,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">on</span>;
+plot(0:dtheta:dtheta*(nstep-1),80*ones(1,nstep),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">on</span>;
+plot(0:dtheta:dtheta*(nstep-1),100*ones(1,nstep),<span class="string">'r.-'</span>,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">on</span>;
+grid <span class="string">on</span>;
+xlim([0 dtheta*(nstep-1)])
+xlabel({<span class="string">'${\theta}[s]$'</span>},<span class="string">'FontSize'</span>,20,<span class="string">'Interpreter'</span>,<span class="string">'Latex'</span>);
+ylabel({<span class="string">'$t(x=L,y=0)[K]$'</span>},<span class="string">'FontSize'</span>,20,<span class="string">'Interpreter'</span>,<span class="string">'Latex'</span>);
+legend({<span class="string">'$t(x=L,y=0)$'</span>,<span class="string">'$t_{oxegen}$'</span>,<span class="string">'$t_{ss}$'</span>},<span class="string">'FontSize'</span>,20,<span class="string">'Interpreter'</span>,<span class="string">'Latex'</span>);
+set(gca, <span class="string">'FontName'</span>,<span class="string">'Times New Roman'</span>,<span class="string">'FontSize'</span>, 20)
+</pre><img vspace="5" hspace="5" src="HW10_02.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear
+clc
+close all
+
+D = 0.06; %m
+th = 0.008;
+L = 0.30;
+
+hinv = 20;
+hinl = 300;
+tin = 80;
+
+hout = 25;
+tout = 300;
+
+k = 10;
+rho = 8500;
+c = 420;
+
+Davg = D+th;
+
+%% a)
+M = 3;
+N = 3;
+dx = L/(M-1);
+dy = pi*Davg/(N-1);
+
+C = Cmake(M,N,rho,c,dx,dy,th);
+K = Kmake(M,N,k,dx,dy,th);
+Hout = Houtmake(M,N,hout,dx,dy);
+Hin = Hinmake(M,N,hinl,hinv,dx,dy);
+[tinfin, tinfout] = tinfmake(M,N,tin,tout);
+C
+K
+Hout
+Hin
+tinfin
+tinfout
+
+%% b)
+M = 51;
+N = 51;
+dx = L/(M-1);
+dy = pi*Davg/(N-1);
+
+C = Cmake(M,N,rho,c,dx,dy,th);
+K = Kmake(M,N,k,dx,dy,th);
+Hout = Houtmake(M,N,hout,dx,dy);
+Hin = Hinmake(M,N,hinl,hinv,dx,dy);
+[tinfin, tinfout] = tinfmake(M,N,tin,tout);
+
+S = K+Hin+Hout;
+r = Hin*tinfin+Hout*tinfout;
+j=1;
+for j=1:1:N
+%dirichlet at other x=0 nodes
+    dirich(j,1)=M*(j-1)+1;
+    dirich(j,2)=tout;
+    j=j+1;
+end
+
+for n=1:1:size(dirich,1)%loop over every Dirichlet boundary condition
+    rw = dirich(n,1);
+    for m=1:1:M*N%loop to set all columns of row as 0
+        S(rw,m) = 0;
+    end
+    S(rw,rw) = 1.;%set S(rw,rw) as 1
+    r(rw) = dirich(n,2);%set r(rw) as the constant value 
+end
+
+tss = S\r;
+Tss = reshape(tss,[M,N]);
+
+figure(1)
+surfc(0:dx:L,0:dy:pi*Davg,Tss','LineWidth',1)
+xlim([0 L])
+ylim([0 pi*Davg])
+colorbar
+set(gcf,'position',[200,300,1000,800])
+xlabel({'$x[m]$'},'FontSize',20,'Interpreter','Latex');
+ylabel({'$y[m]$'},'FontSize',20,'Interpreter','Latex');
+zlabel({'$t_{ss}[K]$'},'FontSize',20,'Interpreter','Latex');
+set(gca, 'FontName','Times New Roman','FontSize', 20)
+
+%% c)
+%the critical time should be
+thetac = 2/max(sum(abs(S),2)./diag(C));
+thetac
+
+%% d)
+%Crank-Nicolson method
+
+dtheta = thetac/2;
+
+%initial condition is tout
+tini = tout*ones(M*N,1);
+
+for n=1:1:size(dirich,1)%loop over every Dirichlet boundary condition
+    rw = dirich(n,1);
+    for m=1:1:M*N%loop to set all columns of row as 0
+        C(rw,m) = 0;
+    end
+    C(rw,rw) = 1.;%set S(rw,rw) as 1
+end
+
+A = C+S*dtheta/2;
+B = C-S*dtheta/2;
+b = r*dtheta;
+
+nstep = 2000;
+%transient temperature
+tt = zeros(M*N,nstep);
+tt(:,1) = tini;
+
+for thetas=1:1:nstep-1
+    tt(:,thetas+1) = A\(B*tt(:,thetas)+b);
+end
+
+figure(2)
+plot(0:dtheta:dtheta*(nstep-1),tt(M,:),'b-','LineWidth',2);
+hold on;
+plot(0:dtheta:dtheta*(nstep-1),80*ones(1,nstep),'rREPLACE_WITH_DASH_DASH','LineWidth',2);
+hold on;
+plot(0:dtheta:dtheta*(nstep-1),100*ones(1,nstep),'r.-','LineWidth',2);
+hold on;
+grid on;
+xlim([0 dtheta*(nstep-1)])
+xlabel({'${\theta}[s]$'},'FontSize',20,'Interpreter','Latex');
+ylabel({'$t(x=L,y=0)[K]$'},'FontSize',20,'Interpreter','Latex');
+legend({'$t(x=L,y=0)$','$t_{oxegen}$','$t_{ss}$'},'FontSize',20,'Interpreter','Latex');
+set(gca, 'FontName','Times New Roman','FontSize', 20)
+##### SOURCE END #####
+--></body></html>
